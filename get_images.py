@@ -85,7 +85,7 @@ def crop_resize_convert(pngs_dir, dim=1024):
             (left, upper, right, lower) = (0, 0, dim, dim)
             img = img.crop((left, upper, right, lower))
 
-            img.save(f"{filename[:-4]}.jpg")
+            img.save(f"{pngs_dir}/{filename[:-4]}.jpg")
         except:
             logging.error(f"Something went wrong while resizing and converting {filename}")
     logging.info("Crop/resize/.jpg conversion done; removing all .pngs")
@@ -97,7 +97,7 @@ def crop_resize_convert(pngs_dir, dim=1024):
 
 def main():
     args = sys.argv[1:]
-    if len(args) != 2:
+    if len(args) != 3:
         print('Please specify filename of list of image links, filename for logging and out directory on command line')
         print('e.g.: python3 get_images.py IMAGE_LINKS_FILENAME.txt LOG_FILENAME.log OUT_DIR_NAME')
         return
@@ -105,7 +105,7 @@ def main():
     links_filename = args[0]
     log_filename = args[1]
     out_dir = args[2]
-    logging.basicConfig(filename=log_filename, encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(filename=log_filename, level=logging.INFO)
 
     write_jp2_images(links_filename, out_dir)
     jp2s_to_pngs(out_dir)
