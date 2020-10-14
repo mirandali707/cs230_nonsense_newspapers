@@ -2,6 +2,7 @@
 python3 get_images.py IMAGE_LINKS_FILENAME.txt ERROR_FILENAME.txt OUT_DIR_NAME
 """
 # import PIL
+import contextlib
 import io
 import logging
 import os
@@ -10,6 +11,13 @@ import time
 
 import requests
 from PIL import Image
+
+@contextlib.contextmanager
+def no_std_out():
+    save_stdout = sys.stdout
+    sys.stdout = io.BytesIO()
+    yield
+    sys.stdout = save_stdout
 
 
 def get_image_name(image_link):
@@ -55,9 +63,10 @@ def jp2s_to_pngs(jp2s_dir):
     """
     logging.info(f"Converting jp2s in {jp2s_dir} to pngs")
     start_time = time.time()
-
-    convert_command = f"opj_decompress -ImgDir {jp2s_dir} -OutFor png"
-    os.system(convert_command)
+    
+    with nostdout():
+        convert_command = f"opj_decompress -ImgDir {jp2s_dir} -OutFor png"
+        os.system(convert_command)
 
     logging.info(".jp2 --> .png conversion done; deleting all .jp2 files")
     delete_command = f"rm {jp2s_dir}/*.jp2"
