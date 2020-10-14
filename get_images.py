@@ -2,7 +2,6 @@
 python3 get_images.py IMAGE_LINKS_FILENAME.txt ERROR_FILENAME.txt OUT_DIR_NAME
 """
 # import PIL
-import contextlib
 import io
 import logging
 import os
@@ -12,26 +11,20 @@ import time
 import requests
 from PIL import Image
 
-@contextlib.contextmanager
-def no_std_out():
-    save_stdout = sys.stdout
-    sys.stdout = io.BytesIO()
-    yield
-    sys.stdout = save_stdout
-
 
 def get_image_name(image_link):
     """
     given link to jp2 image (e.g. 'https://chroniclingamerica.loc.gov/lccn/sn83045298/1963-12-20/ed-1/seq-1.jp2'),
     returns name of image by joining all parts of the url following and including the lccn value (e.g. sn83045298) with underscores
     """
-    return ('_'.join(image_link.split('/')[4:])).strip()[:-1] + 'g'
+    return ('_'.join(image_link.split('/')[4:])).strip()
 
 
 def write_jp2_images(links_filename, out_dir):
     """
     writes all .jp2 images with links in links_filename as into out_dir
     """
+    print("write_jp2_images")
     logging.info(f"Writing .jp2 images from {links_filename} into {out_dir}")
     start_time = time.time()
     count_successful = 0
@@ -61,12 +54,12 @@ def jp2s_to_pngs(jp2s_dir):
     """
     replaces jp2s in `jp2s_dir` with pngs (converts to pngs and deletes all jp2s)
     """
+    print("jp2s_to_pngs")
     logging.info(f"Converting jp2s in {jp2s_dir} to pngs")
     start_time = time.time()
-    
-    with nostdout():
-        convert_command = f"opj_decompress -ImgDir {jp2s_dir} -OutFor png"
-        os.system(convert_command)
+
+    convert_command = f"opj_decompress -ImgDir {jp2s_dir} -OutFor png > /dev/null"
+    os.system(convert_command)
 
     logging.info(".jp2 --> .png conversion done; deleting all .jp2 files")
     delete_command = f"rm {jp2s_dir}/*.jp2"
@@ -79,6 +72,7 @@ def crop_resize_convert(pngs_dir, dim=1024):
     """
     crops all png images in `pngs_dir` to square dimensions (dim, dim), saves as jpg, and deletes all pngs
     """
+    print("crop_resize_convert")
     logging.info(f"Running crop_resize_convert on {pngs_dir} to yield square images of dimension {dim}")
     start_time = time.time()
 
@@ -116,9 +110,13 @@ def main():
     out_dir = args[2]
     logging.basicConfig(filename=log_filename, level=logging.INFO)
 
+    start_time = time.time()
+
     write_jp2_images(links_filename, out_dir)
     jp2s_to_pngs(out_dir)
     crop_resize_convert(out_dir)
+
+    logging.info(f"The whole thing took {time.time() - start_time} seconds")
 
 
 if __name__ == '__main__':
