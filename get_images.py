@@ -25,7 +25,7 @@ def write_jp2_images(links_filename, out_dir):
     writes all .jp2 images with links in links_filename as into out_dir
     """
     print("write_jp2_images")
-    logging.info(f"Writing .jp2 images from {links_filename} into {out_dir}")
+    logging.info("Writing .jp2 images from " + links_filename + " into " + out_dir)
     start_time = time.time()
     count_successful = 0
 
@@ -42,12 +42,12 @@ def write_jp2_images(links_filename, out_dir):
                             f.write(r.content)
                         count_successful += 1
                     else:
-                        logging.warning(f"Request for image {image_link} failed with error code {r.status_code}")
+                        logging.warning("Request for image " + image_link + " failed with error code " + str(r.status_code))
             except:
                 e = sys.exc_info()
-                logging.error(f"Could not get image {image_link}; failed with error {str(e)}")
+                logging.error("Could not get image " + image_link + "; failed with error " + str(e))
 
-    logging.info(f"Wrote {count_successful} .jp2 images in {time.time() - start_time} seconds")
+    logging.info("Wrote " + str(count_successful) + " .jp2 images in " + str(time.time() - start_time) + " seconds")
 
 
 def jp2s_to_pngs(jp2s_dir):
@@ -55,17 +55,17 @@ def jp2s_to_pngs(jp2s_dir):
     replaces jp2s in `jp2s_dir` with pngs (converts to pngs and deletes all jp2s)
     """
     print("jp2s_to_pngs")
-    logging.info(f"Converting jp2s in {jp2s_dir} to pngs")
+    logging.info("Converting jp2s in " + jp2s_dir + " to pngs")
     start_time = time.time()
 
-    convert_command = f"opj_decompress -ImgDir {jp2s_dir} -OutFor png > /dev/null"
+    convert_command = "opj_decompress -ImgDir " + jp2s_dir + " -OutFor png > /dev/null"
     os.system(convert_command)
 
     logging.info(".jp2 --> .png conversion done; deleting all .jp2 files")
-    delete_command = f"rm {jp2s_dir}/*.jp2"
+    delete_command = "rm " + jp2s_dir + "/*.jp2"
     os.system(delete_command)
 
-    logging.info(f".jp2 --> .png conversion took {time.time() - start_time} seconds")
+    logging.info(".jp2 --> .png conversion took " + str(time.time() - start_time) + " seconds")
 
 
 def crop_resize_convert(pngs_dir, dim=1024):
@@ -73,13 +73,13 @@ def crop_resize_convert(pngs_dir, dim=1024):
     crops all png images in `pngs_dir` to square dimensions (dim, dim), saves as jpg, and deletes all pngs
     """
     print("crop_resize_convert")
-    logging.info(f"Running crop_resize_convert on {pngs_dir} to yield square images of dimension {dim}")
+    logging.info("Running crop_resize_convert on " + pngs_dir + " to yield square images of dimension " + str(dim))
     start_time = time.time()
 
     for filename in os.listdir(pngs_dir):
         try:
             # resize to maintain aspect ratio
-            img = Image.open(f"{pngs_dir}/{filename}")
+            img = Image.open(pngs_dir + "/" + filename)
             wpercent = (dim / float(img.size[0]))
             hsize = int((float(img.size[1]) * float(wpercent)))
             img = img.resize((dim, hsize), Image.ANTIALIAS)
@@ -88,14 +88,14 @@ def crop_resize_convert(pngs_dir, dim=1024):
             (left, upper, right, lower) = (0, 0, dim, dim)
             img = img.crop((left, upper, right, lower))
 
-            img.save(f"{pngs_dir}/{filename[:-4]}.jpg")
+            img.save(pngs_dir + "/" + filename[:-4] + ".jpg")
         except:
-            logging.error(f"Something went wrong while resizing and converting {filename}")
+            logging.error("Something went wrong while resizing and converting " + filename)
     logging.info("Crop/resize/.jpg conversion done; removing all .pngs")
-    delete_command = f"rm {pngs_dir}/*.png"
+    delete_command = "rm " + pngs_dir + "/*.png"
     os.system(delete_command)
 
-    logging.info(f"crop_resize_convert took {time.time() - start_time} seconds")
+    logging.info("crop_resize_convert took " + str(time.time() - start_time) + " seconds")
 
 
 def main():
@@ -116,7 +116,7 @@ def main():
     jp2s_to_pngs(out_dir)
     crop_resize_convert(out_dir)
 
-    logging.info(f"The whole thing took {time.time() - start_time} seconds")
+    logging.info("The whole thing took " + str(time.time() - start_time) + " seconds")
 
 
 if __name__ == '__main__':
