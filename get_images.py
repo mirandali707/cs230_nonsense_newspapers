@@ -110,13 +110,13 @@ def main():
     out_dir = args[2]
     logging.basicConfig(filename=log_filename, level=logging.INFO)
 
-    start_time = time.time()
+    # start_time = time.time()
 
     write_jp2_images(links_filename, out_dir)
-    jp2s_to_pngs(out_dir)
-    crop_resize_convert(out_dir)
+    # jp2s_to_pngs(out_dir)
+    # crop_resize_convert(out_dir)
 
-    logging.info("The whole thing took " + str(time.time() - start_time) + " seconds")
+    # logging.info("The whole thing took " + str(time.time() - start_time) + " seconds")
 
 
 if __name__ == '__main__':
