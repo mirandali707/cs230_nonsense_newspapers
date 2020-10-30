@@ -1,7 +1,6 @@
 """
 python3 get_images.py IMAGE_LINKS_FILENAME.txt ERROR_FILENAME.txt OUT_DIR_NAME
 """
-# import PIL
 import io
 import logging
 import os
@@ -10,8 +9,6 @@ import time
 
 import requests
 from PIL import Image
-
-# pool multiprocessing
 
 def get_image_name(image_link):
     """
@@ -49,24 +46,6 @@ def write_jp2_images(links_filename, out_dir):
                 logging.error("Could not get image " + image_link + "; failed with error " + str(e))
 
     logging.info("Wrote " + str(count_successful) + " .jp2 images in " + str(time.time() - start_time) + " seconds")
-
-
-# def jp2s_to_pngs(jp2s_dir):
-#     """
-#     replaces jp2s in `jp2s_dir` with pngs (converts to pngs and deletes all jp2s)
-#     """
-#     print("jp2s_to_pngs")
-#     logging.info("Converting jp2s in " + jp2s_dir + " to pngs")
-#     start_time = time.time()
-#
-#     convert_command = "opj_decompress -ImgDir " + jp2s_dir + " -OutFor png > /dev/null"
-#     os.system(convert_command)
-#
-#     logging.info(".jp2 --> .png conversion done; deleting all .jp2 files")
-#     delete_command = "rm " + jp2s_dir + "/*.jp2"
-#     os.system(delete_command)
-#
-#     logging.info(".jp2 --> .png conversion took " + str(time.time() - start_time) + " seconds")
 
 
 def jp2s_to_jpgs(jp2s_dir):
@@ -122,7 +101,6 @@ def crop_resize_convert(dir, dim=1024):
             (left, upper, right, lower) = (0, 0, dim, dim)
             img = img.crop((left, upper, right, lower))
 
-            # img.save(dir + "/" + filename[:-4] + ".jpg")
             img.save(dir + "/" + filename)
         except:
             logging.error("Something went wrong while resizing and converting " + filename)
@@ -148,7 +126,6 @@ def main():
     start_time = time.time()
 
     write_jp2_images(links_filename, out_dir)
-    # jp2s_to_pngs(out_dir)
     jp2s_to_jpgs(out_dir)
     crop_resize_convert(out_dir)
 
