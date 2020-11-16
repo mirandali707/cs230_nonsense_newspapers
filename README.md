@@ -6,3 +6,4 @@ This repo contains code I wrote for my CS230 final project.
 * `get_front_pages.ipynb`: writes manifest files from which images are downloaded, uses Library of Congress Newspaper Navigator API structure
 * `get_images.py`: downloads images from links in text files created by `get_front_pages.ipynb` into specified directory
 * `is this loss.ipynb`: notebook for visualizing G/D loss during training
+* `outputs`: directory containing 20 generated outputs at each scale
