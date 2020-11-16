@@ -1,5 +1,5 @@
 # cs230_nonsense_newspapers
-This repo contains code I wrote for my CS230 final project.
+This repo contains code I wrote for my CS230 final project. I also wrote a website from scratch to present the final outputs; that repo can be found [here](https://github.com/mirandali707/nonsense_newspapers).
 
 ## Files
 * `convert_greyscale.py`: converts all images in directory to 1-channel greyscale
